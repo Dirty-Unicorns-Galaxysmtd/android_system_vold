@@ -1669,6 +1669,11 @@ int VolumeManager::cleanupAsec(Volume *v, bool force) {
     AsecIdCollection removeAsec;
     AsecIdCollection removeObb;
 
+    // Only primary storage needs ASEC cleanup
+    if (!(v->getFlags() & VOL_PROVIDES_ASEC)) {
+        return 0;
+    }
+
     for (AsecIdCollection::iterator it = mActiveContainers->begin(); it != mActiveContainers->end();
             ++it) {
         ContainerData* cd = *it;
