@@ -445,7 +445,7 @@ int VolumeManager::createAsec(const char *id, unsigned int numSectors, const cha
 
         int mountStatus;
         if (usingExt4) {
-            mountStatus = Ext4::doMount(dmDevice, mountPoint, false, false, false, false);
+            mountStatus = Ext4::doMount(dmDevice, mountPoint, false, false, false);
         } else {
             mountStatus = Fat::doMount(dmDevice, mountPoint, false, false, false, ownerUid, 0, 0000,
                     false);
@@ -515,7 +515,7 @@ int VolumeManager::finalizeAsec(const char *id) {
 
     int result = 0;
     if (sb.c_opts & ASEC_SB_C_OPTS_EXT4) {
-        result = Ext4::doMount(loopDevice, mountPoint, true, true, true, false);
+        result = Ext4::doMount(loopDevice, mountPoint, true, true, true);
     } else {
         result = Fat::doMount(loopDevice, mountPoint, true, true, true, 0, 0, 0227, false);
     }
@@ -578,8 +578,7 @@ int VolumeManager::fixupAsecPermissions(const char *id, gid_t gid, const char* f
     int ret = Ext4::doMount(loopDevice, mountPoint,
             false /* read-only */,
             true  /* remount */,
-            false /* executable */,
-            false /* sdcard */);
+            false /* executable */);
     if (ret) {
         SLOGE("Unable remount to fix permissions for %s (%s)", id, strerror(errno));
         return -1;
@@ -635,8 +634,7 @@ int VolumeManager::fixupAsecPermissions(const char *id, gid_t gid, const char* f
     result |= Ext4::doMount(loopDevice, mountPoint,
             true /* read-only */,
             true /* remount */,
-            true /* execute */,
-            false /* sdcard */);
+            true /* execute */);
 
     if (result) {
         SLOGE("ASEC fix permissions failed (%s)", strerror(errno));
@@ -1034,7 +1032,7 @@ int VolumeManager::mountAsec(const char *id, const char *key, int ownerUid) {
 
     int result;
     if (sb.c_opts & ASEC_SB_C_OPTS_EXT4) {
-        result = Ext4::doMount(dmDevice, mountPoint, true, false, true, false);
+        result = Ext4::doMount(dmDevice, mountPoint, true, false, true);
     } else {
         result = Fat::doMount(dmDevice, mountPoint, true, false, true, ownerUid, 0, 0222, false);
     }
