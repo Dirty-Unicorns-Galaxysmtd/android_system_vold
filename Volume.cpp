@@ -252,9 +252,8 @@ int Volume::createDeviceNode(const char *path, int major, int minor) {
 }
 
 int Volume::formatVol(bool wipe) {
-
     const char* fstype = NULL;
-
+    
     if (getState() == Volume::State_NoMedia) {
         errno = ENODEV;
         return -1;
@@ -307,7 +306,7 @@ int Volume::formatVol(bool wipe) {
     if (mDebug) {
         SLOGI("Formatting volume %s (%s)", getLabel(), devicePath);
     }
-
+    
     fstype = getFsType((const char*)devicePath);
     if (fstype == NULL) {
         // Default to vfat
