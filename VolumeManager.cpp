@@ -1590,8 +1590,12 @@ bool VolumeManager::isMountpointMounted(const char *mp)
     return false;
 }
 
-int VolumeManager::cleanupAsec(Volume *v, bool force)
-{
+int VolumeManager::cleanupAsec(Volume *v, bool force) {
+    // Only primary storage needs ASEC cleanup
+    if (!(v->getFlags() & VOL_PROVIDES_ASEC)) {
+        return 0;
+    }
+
     int rc = 0;
 
     char asecFileName[255];
