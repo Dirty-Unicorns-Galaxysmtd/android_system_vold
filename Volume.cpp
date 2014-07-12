@@ -323,14 +323,8 @@ int Volume::formatVol(bool wipe, const char* fstype) {
     } else {
         ret = Fat::format(devicePath, 0, wipe);
     }
-    
-    if (strcmp(fstype, "exfat") == 0) {
-        if (Exfat::format(devicePath)) {
-            SLOGE("Failed for format (%s) as exfat", strerror(errno));
-        }
-    } else if (strcmp(fstype, "ntfs") == 0) {
-        ret = Ntfs::format(devicePath, wipe);
-    } else if (Fat::format(devicePath, 0, wipe)) {
+
+    if (ret < 0) {
         SLOGE("Failed to format (%s)", strerror(errno));
     }
 
@@ -509,7 +503,7 @@ int Volume::mountVol() {
                     return -1;
                 }
 
-                if (Ext4::doMount(devicePath, getMountpoint(), false, false, false)) {
+                if (Ext4::doMount(devicePath, getMountpoint(), false, false, false, true)) {
                     SLOGE("%s failed to mount via EXT4 (%s)\n", devicePath, strerror(errno));
                     continue;
                 }
